@@ -4,17 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="7e5a5dae-4ea0-4048-acf3-d6480deaa220" name="Changes" comment="" />
+=======
+    <list default="true" id="7e5a5dae-4ea0-4048-acf3-d6480deaa220" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/web_backend_test_catering_api/config/config.php" beforeDir="false" afterPath="$PROJECT_DIR$/web_backend_test_catering_api/config/config.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_backend_test_catering_api/routes/router.php" beforeDir="false" afterPath="$PROJECT_DIR$/web_backend_test_catering_api/routes/router.php" afterDir="false" />
+    </list>
+>>>>>>> dc6c9a005ef86815bea7d123a7577de00d11c602
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< HEAD
   <component name="ComposerConfigs">
     <option name="configs">
       <option value="$PROJECT_DIR$/DTT assessment  - Backend_2023 copy/web_backend_test_catering_api/web_backend_test_catering_api/web_backend_test_catering_api/composer.json" />
     </option>
   </component>
+=======
+>>>>>>> dc6c9a005ef86815bea7d123a7577de00d11c602
   <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/web_backend_test_catering_api/composer.json</pharConfigPath>
     <execution />
@@ -24,6 +34,7 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\php-8.4.4\php.exe">
     <include_path>
+<<<<<<< HEAD
       <path value="$PROJECT_DIR$/DTT assessment  - Backend_2023 copy/web_backend_test_catering_api/web_backend_test_catering_api/web_backend_test_catering_api/vendor/bramus/router" />
       <path value="$PROJECT_DIR$/DTT assessment  - Backend_2023 copy/web_backend_test_catering_api/web_backend_test_catering_api/web_backend_test_catering_api/vendor/composer" />
     </include_path>
@@ -32,10 +43,21 @@
   "associatedIndex": 6
 }]]></component>
   <component name="ProjectId" id="2tAvY9VfinU2PVvhfejwrajg6U2" />
+=======
+      <path value="$PROJECT_DIR$/web_backend_test_catering_api/vendor/bramus/router" />
+      <path value="$PROJECT_DIR$/web_backend_test_catering_api/vendor/composer" />
+    </include_path>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2tArTHwU79Aai6BAOFHGw4sVAQn" />
+>>>>>>> dc6c9a005ef86815bea7d123a7577de00d11c602
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -50,6 +72,21 @@
       <recent name="C:\xampp\htdocs\DTT-Facility-Management\web_backend_test_catering_api\postman_collection" />
     </key>
   </component>
+=======
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;user-story-3&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+>>>>>>> dc6c9a005ef86815bea7d123a7577de00d11c602
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -62,11 +99,21 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="7e5a5dae-4ea0-4048-acf3-d6480deaa220" name="Changes" comment="" />
+<<<<<<< HEAD
       <created>1739807740139</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1739807740139</updated>
       <workItem from="1739807741429" duration="153000" />
+=======
+      <created>1739805726153</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1739805726153</updated>
+      <workItem from="1739805727243" duration="1029000" />
+      <workItem from="1739806957974" duration="77000" />
+      <workItem from="1739807063696" duration="351000" />
+>>>>>>> dc6c9a005ef86815bea7d123a7577de00d11c602
     </task>
     <servers />
   </component>

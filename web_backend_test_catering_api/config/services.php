@@ -1,9 +1,11 @@
 <?php
 
-require_once '../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Plugins;
 use App\Plugins\Di\Factory;
+
+$config = require __DIR__ . '/config.php';
 
 $di = Factory::getDi();
 

@@ -10,22 +10,32 @@
     <option name="highlightLevel" value="WARNING" />
     <option name="transferred" value="true" />
   </component>
+  <component name="PhpCodeSniffer">
+    <phpcs_settings>
+      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="cf48623b-d493-4348-9968-05c9a1aece30" timeout="30000" />
+    </phpcs_settings>
+  </component>
   <component name="PhpIncludePathManager">
     <include_path>
-<<<<<<< HEAD
-      <path value="$PROJECT_DIR$/DTT assessment  - Backend_2023 copy/web_backend_test_catering_api/web_backend_test_catering_api/web_backend_test_catering_api/vendor/bramus/router" />
-      <path value="$PROJECT_DIR$/DTT assessment  - Backend_2023 copy/web_backend_test_catering_api/web_backend_test_catering_api/web_backend_test_catering_api/vendor/composer" />
-=======
-      <path value="$PROJECT_DIR$/web_backend_test_catering_api/vendor/bramus/router" />
-      <path value="$PROJECT_DIR$/web_backend_test_catering_api/vendor/composer" />
->>>>>>> dc6c9a005ef86815bea7d123a7577de00d11c602
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/bramus/router" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.3">
     <option name="suggestChangeDefaultLanguageLevel" value="false" />
   </component>
+  <component name="PhpStan">
+    <PhpStan_settings>
+      <phpstan_by_interpreter asDefaultInterpreter="true" interpreter_id="cf48623b-d493-4348-9968-05c9a1aece30" timeout="60000" />
+    </PhpStan_settings>
+  </component>
   <component name="PhpStanOptionsConfiguration">
     <option name="transferred" value="true" />
+  </component>
+  <component name="Psalm">
+    <Psalm_settings>
+      <psalm_fixer_by_interpreter asDefaultInterpreter="true" interpreter_id="cf48623b-d493-4348-9968-05c9a1aece30" timeout="60000" />
+    </Psalm_settings>
   </component>
   <component name="PsalmOptionsConfiguration">
     <option name="transferred" value="true" />
