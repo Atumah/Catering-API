@@ -65,43 +65,142 @@ class FacilityController extends BaseController
         }
     }
 
-    public function getFacility($facilityId)
+public function getFacility($id) {
+    try {
+        if (empty($id)) {
+            throw new Exceptions\BadRequest(['error' => 'Facility ID is required']);
+        }
+
+        $query = "CALL GetFacility(:facility_id)";
+        $params = [':facility_id' => $id];
+
+        $success = $this->db->executeQuery($query, $params);
+        if (!$success) {
+            throw new Exceptions\NotFound(['error' => 'Facility not found']);
+        }
+
+        $data = $this->db->getStatement()->fetchAll(\PDO::FETCH_ASSOC);
+        if (empty($data)) {
+            throw new Exceptions\NotFound(['error' => 'Facility not found']);
+        }
+
+        return (new Status\OK(['data' => $data]))->send();
+    } catch (\PDOException $e) {
+        if (strpos($e->getMessage(), 'SQLSTATE[45000]') !== false) {
+            return (new Status\NotFound(['error' => 'Facility not found']))->send();
+        }
+        return (new Status\InternalServerError(['error' => 'An unexpected error occurred']))->send();
+    } catch (\Exception $e) {
+        if ($e instanceof Exceptions\BadRequest) {
+            return (new Status\BadRequest(['error' => $e->getMessage()]))->send();
+        } elseif ($e instanceof Exceptions\NotFound) {
+            return (new Status\NotFound(['error' => $e->getMessage()]))->send();
+        }
+        return (new Status\InternalServerError(['error' => 'An unexpected error occurred']))->send();
+    }
+}
+
+public function getFacilities() {
+    try {
+        $query = "CALL GetFacilities()";
+        $success = $this->db->executeQuery($query);
+        if (!$success) {
+            throw new Exceptions\NotFound(['error' => 'Facility not found']);
+        }
+        $data = $this->db->getStatement()->fetchAll(\PDO::FETCH_ASSOC);
+        if (empty($data)) {
+            throw new Exceptions\NotFound(['error' => 'No facilities found']);
+        }
+        return (new Status\OK(['data' => $data]))->send();
+    } catch (\PDOException $e) {
+        if (strpos($e->getMessage(), 'SQLSTATE[45000]') !== false) {
+            return (new Status\NotFound(['error' => 'Facility not found']))->send();
+        }
+        return (new Status\InternalServerError(['error' => 'An unexpected error occurred']))->send();
+    } catch (\Exception $e) {
+        if ($e instanceof Exceptions\BadRequest) {
+            return (new Status\BadRequest(['error' => $e->getMessage()]))->send();
+        } elseif ($e instanceof Exceptions\NotFound) {
+            return (new Status\NotFound(['error' => $e->getMessage()]))->send();
+        }
+        return (new Status\InternalServerError(['error' => 'An unexpected error occurred']))->send();
+    }
+}
+
+    public function updateFacility($id)
     {
         try {
-            if (!is_numeric($facilityId)) {
-                throw new Exceptions\BadRequest(['error' => 'Invalid facility ID']);
+            if (empty($id)) {
+                throw new Exceptions\BadRequest(['error' => 'Facility ID is required']);
             }
 
-            $query = "CALL GetFacility(:facility_id)";
-            $params = [':facility_id' => (int)$facilityId];
-
-            $result = $this->db->executeQuery($query, $params);
-
-            // Add debug logging
-            error_log("Query result: " . print_r($result, true));
-
-            if ($result === false) {
-                throw new Exceptions\InternalServerError(['error' => 'Database query failed']);
+            $data = json_decode(file_get_contents('php://input'), true);
+            if (empty($data['facility_name']) || empty($data['facility_creation_date'])
+                || !isset($data['location_id']) || empty($data['tags'])) {
+                throw new Exceptions\BadRequest(['error' => 'All fields are required']);
             }
 
-            if (empty($result)) {
+            $tags = implode(',', $data['tags']);
+
+            $query = "CALL UpdateFacility(:facility_id, :facility_name, :facility_creation_date, :location_id, :tags)";
+            $params = [
+                ':facility_id' => $id,
+                ':facility_name' => $data['facility_name'],
+                ':facility_creation_date' => $data['facility_creation_date'],
+                ':location_id' => $data['location_id'],
+                ':tags' => $tags
+            ];
+
+            $success = $this->db->executeQuery($query, $params);
+            if (!$success) {
                 throw new Exceptions\NotFound(['error' => 'Facility not found']);
             }
 
-            $facility = $result[0];
-
-            // Handle tags
-            $facility['tags'] = !empty($facility['tags']) ?
-                array_map('trim', explode(',', $facility['tags'])) : [];
-
-            return (new Status\OK(['data' => $facility]))->send();
-
-        } catch (\Exception $e) {
-            if ($e instanceof Exceptions\NotFound) {
-                return (new Status\NotFound(['error' => $e->getMessage()]))->send();
+            return (new Status\OK(['message' => 'Facility updated successfully']))->send();
+        } catch (\PDOException $e) {
+            if (strpos($e->getMessage(), 'SQLSTATE[45000]') !== false) {
+                return (new Status\NotFound(['error' => 'Facility not found']))->send();
             }
+            return (new Status\InternalServerError(['error' => 'An unexpected error occurred']))->send();
+        } catch (\Exception $e) {
             if ($e instanceof Exceptions\BadRequest) {
                 return (new Status\BadRequest(['error' => $e->getMessage()]))->send();
+            } elseif ($e instanceof Exceptions\NotFound) {
+                return (new Status\NotFound(['error' => $e->getMessage()]))->send();
+            }
+            return (new Status\InternalServerError(['error' => 'An unexpected error occurred']))->send();
+        }
+    }
+
+    public function deleteFacility($id)
+    {
+        try {
+            if (empty($id)) {
+                throw new Exceptions\BadRequest(['error' => 'Facility ID is required']);
+            }
+
+            $query = "CALL DeleteFacility(:facility_id)";
+            $params = [':facility_id' => $id];
+
+            $this->db->executeQuery($query, $params);
+
+            // Check if any rows were affected
+            $rowCount = $this->db->getStatement()->rowCount();
+            if ($rowCount === 0) {
+                throw new Exceptions\NotFound(['error' => 'Facility not found']);
+            }
+
+            return (new Status\OK(['message' => 'Facility deleted successfully']))->send();
+        } catch (\PDOException $e) {
+            if (strpos($e->getMessage(), 'SQLSTATE[45000]') !== false) {
+                return (new Status\NotFound(['error' => 'Facility not found']))->send();
+            }
+            return (new Status\InternalServerError(['error' => 'Database error: ' . $e->getMessage()]))->send();
+        } catch (\Exception $e) {
+            if ($e instanceof Exceptions\BadRequest) {
+                return (new Status\BadRequest(['error' => $e->getMessage()]))->send();
+            } elseif ($e instanceof Exceptions\NotFound) {
+                return (new Status\NotFound(['error' => $e->getMessage()]))->send();
             }
             return (new Status\InternalServerError(['error' => $e->getMessage()]))->send();
         }
