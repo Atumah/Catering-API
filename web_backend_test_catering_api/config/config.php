@@ -4,7 +4,7 @@ return [
     'db' => [
         'host' => 'localhost',
         'database' => 'facility_management',
-        'username' => 'root',
-        'password' => 'Ogheneruemu',
+        'username' => 'YOUR_USERNAME',
+        'password' => 'YOUR_PASSWORD',
     ],
 ];
