@@ -1,0 +1,174 @@
+{
+	"info": {
+		"_postman_id": "348bfd1e-8118-47d8-befb-f385c93d535a",
+		"name": "DTT facility management",
+		"description": "This folder is ordered by function, each function has a call to an endpoint with each folder containing calls that covers major scenarios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31579750",
+		"_collection_link": "https://lunar-rocket-201517.postman.co/workspace/e8dde59a-9964-48ec-8de2-3496a84fddd0/collection/31579750-348bfd1e-8118-47d8-befb-f385c93d535a?action=share&source=collection_link&creator=31579750"
+	},
+	"item": [
+		{
+			"name": "Create Facility",
+			"item": [
+				{
+					"name": "Create Facility",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Credentials for Create Facility",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"facility_name\": \"thuishaven\",\r\n    \"facility_creation_date\": \"2024-03-20\",\r\n    \"location_city\": \"Amsterdam\",\r\n    \"location_address\": \"Schipol\",\r\n    \"location_zip_code\": \"1234 AB\",\r\n    \"location_country_code\": \"NL\",\r\n    \"location_phone_number\": \"+31612345678\",\r\n    \"tags\": [\"restaurant\", \"delivery\", \"vegetarian\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/Catering-API/web_backend_test_catering_api/facility/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"Catering-API",
+								"web_backend_test_catering_api",
+								"facility",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adding duplicate facility",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"description": "This covers the creation of facilities and possible failure scenarios"
+		},
+		{
+			"name": "Get Facility",
+			"item": [
+				{
+					"name": "Get Facility",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get Nonexistent facility",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"description": "This covers retrieving a particular facility from the API and possible scenarios where it might fail"
+		},
+		{
+			"name": "Get Facilities",
+			"item": [
+				{
+					"name": "Get Facilities",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"description": "This covers retrieving all facilities from the API and possible scenarios where it might fail"
+		},
+		{
+			"name": "Update Facility",
+			"item": [
+				{
+					"name": "Update Facility",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update non existent facility",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"description": "This covers update of facilities and scenarios where it might fail"
+		},
+		{
+			"name": "Delete Facility",
+			"item": [
+				{
+					"name": "Delete Facility",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"description": "This covers the deletion of facility and its tags"
+		},
+		{
+			"name": "Search Facility",
+			"item": [
+				{
+					"name": "Search by city",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Search by tag name",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Search by facility name",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Search by all filters",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"description": "This covers retrieving facilities by facility name, tag name, city or a combination of all"
+		}
+	]
+}

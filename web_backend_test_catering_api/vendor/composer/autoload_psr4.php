@@ -6,6 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'StoredProcedures\\' => array($baseDir . '/database/stored-procedures'),
     'App\\' => array($baseDir . '/App'),
 );

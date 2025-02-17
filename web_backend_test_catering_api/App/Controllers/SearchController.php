@@ -18,6 +18,11 @@ class SearchController extends BaseController
                 throw new Exceptions\BadRequest(['error' => 'At least one search parameter is required']);
             }
 
+            // Sanitize inputs to prevent XSS and other attacks
+            $facilityName = $this->sanitizeString($facilityName);
+            $tagName = $this->sanitizeString($tagName);
+            $city = $this->sanitizeString($city);
+
             $query = "CALL SearchFacilities(:facility_name, :tag_name, :city)";
             $params = [
                 ':facility_name' => $facilityName,
@@ -50,4 +55,12 @@ class SearchController extends BaseController
         }
     }
 
+    private function sanitizeString($input)
+    {
+        if ($input === null) {
+            return null;
+        }
+
+        return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+    }
 }
