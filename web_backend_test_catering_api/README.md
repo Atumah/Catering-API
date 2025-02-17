@@ -40,3 +40,24 @@ The database is registered in the DI container. Among other database features, q
 
 This will invoke the executeQuery method of the `App\Plugins\Db\Db` class.
 
+
+### Extra Features
+1. **Facility Management**:
+   - Create Facility
+   - Get Facility
+   - Get Facilities
+   - Update Facility
+   - Delete Facility
+   - Search Facility
+
+2. **Error Handling**:
+   - Custom error messages for different scenarios (e.g., Not Found, Internal Server Error).
+
+3. **Input Sanitization**:
+   - Sanitize input strings to prevent XSS attacks using `htmlspecialchars` and `trim`.
+
+4. **Postman Collection**:
+   - A Postman collection is included to test the API endpoints. Import the collection from `postman_collection/DTT%20facility%20management.postman_collection.json`.
+
+5. **Search Functionality**:
+   - Search facilities by city, tag name, facility name, or a combination of all filters.
