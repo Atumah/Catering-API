@@ -1,12 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2025 at 03:23 PM
+-- Generation Time: Feb 22, 2025 at 04:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
+CREATE DATABASE IF NOT EXISTS facility_management;
+USE facility_management;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -42,19 +44,19 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `CreateFacility` (IN `facility_name`
     END IF;
 
     -- Check if Facility name and creation date already exist
-    IF EXISTS (SELECT 1 FROM Facility WHERE name = facility_name AND creation_date = facility_creation_date) THEN
+    IF EXISTS (SELECT 1 FROM facility WHERE name = facility_name AND creation_date = facility_creation_date) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Facility with the same name and creation date already exists';
     END IF;
 
     -- Insert Location
-    INSERT INTO Location (city, address, zip_code, country_code, phone_number)
+    INSERT INTO location (city, address, zip_code, country_code, phone_number)
     VALUES (location_city, location_address, location_zip_code, location_country_code, location_phone_number);
     
     SET location_id = LAST_INSERT_ID();
 
     -- Insert Facility with new Location ID
-    INSERT INTO Facility (name, creation_date, location_id) 
+    INSERT INTO facility (name, creation_date, location_id) 
     VALUES (facility_name, facility_creation_date, location_id);
     
     SET facility_id = LAST_INSERT_ID();
@@ -68,13 +70,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `CreateFacility` (IN `facility_name`
         SET @tag_list = SUBSTRING(@tag_list, LENGTH(@tag_name) + 2);
         
         -- Insert tag if it doesn't exist (using INSERT IGNORE to handle duplicates)
-        INSERT IGNORE INTO Tag (name) VALUES (@tag_name);
+        INSERT IGNORE INTO tag (name) VALUES (@tag_name);
 
         -- Get the tag_id of the inserted or existing tag
-        SET tag_id = (SELECT id FROM Tag WHERE name = @tag_name LIMIT 1);
+        SET tag_id = (SELECT id FROM tag WHERE name = @tag_name LIMIT 1);
         
         -- Insert into FacilityTag junction table
-        INSERT INTO FacilityTag (facility_id, tag_id) VALUES (facility_id, tag_id);
+        INSERT INTO facilitytag (facility_id, tag_id) VALUES (facility_id, tag_id);
     END WHILE;
 
     -- Commit transaction
@@ -88,7 +90,7 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `DeleteFacility` (IN `facility_id` INT)   BEGIN
     START TRANSACTION;
 
-    DELETE FROM Facility WHERE id = facility_id;
+    DELETE FROM facility WHERE id = facility_id;
 
     COMMIT;
 END$$
@@ -104,10 +106,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `GetFacilities` ()   BEGIN
         l.country_code, 
         l.phone_number,
         GROUP_CONCAT(t.name ORDER BY t.name SEPARATOR ', ') AS tags
-    FROM Facility f
-    JOIN Location l ON f.location_id = l.id
-    LEFT JOIN FacilityTag ft ON f.id = ft.facility_id
-    LEFT JOIN Tag t ON ft.tag_id = t.id
+    FROM facility f
+    JOIN location l ON f.location_id = l.id
+    LEFT JOIN facilitytag ft ON f.id = ft.facility_id
+    LEFT JOIN tag t ON ft.tag_id = t.id
     GROUP BY f.id;
 END$$
 
@@ -116,7 +118,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `GetFacility` (IN `facility_id` INT)
 
     -- Check if facility exists
     SELECT COUNT(*) INTO facility_count
-    FROM Facility
+    FROM facility
     WHERE id = facility_id;
 
     IF facility_count = 0 THEN
@@ -133,10 +135,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `GetFacility` (IN `facility_id` INT)
             l.country_code,
             l.phone_number,
             COALESCE(GROUP_CONCAT(DISTINCT t.name ORDER BY t.name SEPARATOR ', '), '') as tags
-        FROM Facility f
-        INNER JOIN Location l ON f.location_id = l.id
-        LEFT JOIN FacilityTag ft ON f.id = ft.facility_id
-        LEFT JOIN Tag t ON ft.tag_id = t.id
+        FROM facility f
+        INNER JOIN location l ON f.location_id = l.id
+        LEFT JOIN facilitytag ft ON f.id = ft.facility_id
+        LEFT JOIN tag t ON ft.tag_id = t.id
         WHERE f.id = facility_id
         GROUP BY 
             f.id, 
@@ -158,10 +160,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SearchFacilities` (IN `p_facility_n
     SET sql_query = 'SELECT DISTINCT f.id, f.name, f.creation_date, 
                         l.city, l.address, l.zip_code, l.country_code, l.phone_number,
                         GROUP_CONCAT(t.name ORDER BY t.name ASC SEPARATOR \', \') AS tags
-                    FROM Facility f
-                    JOIN Location l ON f.location_id = l.id
-                    LEFT JOIN FacilityTag ft ON f.id = ft.facility_id
-                    LEFT JOIN Tag t ON ft.tag_id = t.id
+                    FROM facility f
+                    JOIN location l ON f.location_id = l.id
+                    LEFT JOIN facilitytag ft ON f.id = ft.facility_id
+                    LEFT JOIN tag t ON ft.tag_id = t.id
                     WHERE 1=1';
 
     -- Applying filters based on input (adding wildcards for partial matching)
@@ -172,8 +174,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SearchFacilities` (IN `p_facility_n
     END IF;
 
     IF p_tag_name IS NOT NULL AND p_tag_name != '' THEN
-        SET sql_query = CONCAT(sql_query, ' AND EXISTS (SELECT 1 FROM FacilityTag ft2 
-                                                        JOIN Tag t2 ON ft2.tag_id = t2.id 
+        SET sql_query = CONCAT(sql_query, ' AND EXISTS (SELECT 1 FROM facilitytag ft2 
+                                                        JOIN tag t2 ON ft2.tag_id = t2.id 
                                                         WHERE ft2.facility_id = f.id 
                                                         AND t2.name LIKE ?)');
         SET p_tag_name = CONCAT('%', p_tag_name, '%'); 
@@ -227,35 +229,35 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateFacility` (IN `p_facility_id`
     START TRANSACTION;
     
     -- Check if facility exists
-    IF NOT EXISTS (SELECT 1 FROM Facility WHERE id = p_facility_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM facility WHERE id = p_facility_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Facility not found';
     END IF;
 
     -- Check if location exists
-    IF NOT EXISTS (SELECT 1 FROM Location WHERE id = p_location_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM location WHERE id = p_location_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Location not found';
     END IF;
 
     -- Update facility
-    UPDATE Facility 
+    UPDATE facility 
     SET name = p_facility_name,
         creation_date = p_facility_creation_date,
         location_id = p_location_id
     WHERE id = p_facility_id;
 
     -- Delete existing tags
-    DELETE FROM FacilityTag WHERE facility_id = p_facility_id;
+    DELETE FROM facilitytag WHERE facility_id = p_facility_id;
 
     -- Process new tags
     WHILE p_tags != '' DO
         SET v_tag_name = TRIM(SUBSTRING_INDEX(p_tags, ',', 1));
         
         -- Insert tag if not exists
-        INSERT IGNORE INTO Tag (name) VALUES (v_tag_name);
+        INSERT IGNORE INTO tag (name) VALUES (v_tag_name);
         
         -- Link tag to facility
-        INSERT INTO FacilityTag (facility_id, tag_id)
-        SELECT p_facility_id, id FROM Tag WHERE name = v_tag_name;
+        INSERT INTO facilitytag (facility_id, tag_id)
+        SELECT p_facility_id, id FROM tag WHERE name = v_tag_name;
 
         IF LOCATE(',', p_tags) > 0 THEN
             SET p_tags = SUBSTRING(p_tags, LOCATE(',', p_tags) + 1);
@@ -270,10 +272,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateFacility` (IN `p_facility_id`
     SELECT f.id, f.name, f.creation_date,
            l.city, l.address, l.zip_code, l.country_code, l.phone_number,
            GROUP_CONCAT(t.name ORDER BY t.name ASC SEPARATOR ', ') AS tags
-    FROM Facility f
-    JOIN Location l ON f.location_id = l.id
-    LEFT JOIN FacilityTag ft ON f.id = ft.facility_id
-    LEFT JOIN Tag t ON ft.tag_id = t.id
+    FROM facility f
+    JOIN location l ON f.location_id = l.id
+    LEFT JOIN facilitytag ft ON f.id = ft.facility_id
+    LEFT JOIN tag t ON ft.tag_id = t.id
     WHERE f.id = p_facility_id
     GROUP BY f.id;
 END$$
@@ -285,9 +287,6 @@ DELIMITER ;
 --
 -- Table structure for table `facility`
 --
--- Creation: Feb 15, 2025 at 05:00 PM
--- Last update: Feb 17, 2025 at 01:36 PM
---
 
 CREATE TABLE `facility` (
   `id` int(11) NOT NULL,
@@ -295,6 +294,12 @@ CREATE TABLE `facility` (
   `creation_date` date NOT NULL,
   `location_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `facility`:
+--   `location_id`
+--       `location` -> `id`
+--
 
 --
 -- Dumping data for table `facility`
@@ -338,14 +343,19 @@ INSERT INTO `facility` (`id`, `name`, `creation_date`, `location_id`) VALUES
 --
 -- Table structure for table `facilitytag`
 --
--- Creation: Feb 16, 2025 at 11:39 PM
--- Last update: Feb 17, 2025 at 01:26 PM
---
 
 CREATE TABLE `facilitytag` (
   `facility_id` int(11) NOT NULL,
   `tag_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `facilitytag`:
+--   `facility_id`
+--       `facility` -> `id`
+--   `tag_id`
+--       `tag` -> `id`
+--
 
 --
 -- Dumping data for table `facilitytag`
@@ -372,9 +382,6 @@ INSERT INTO `facilitytag` (`facility_id`, `tag_id`) VALUES
 --
 -- Table structure for table `location`
 --
--- Creation: Feb 15, 2025 at 05:00 PM
--- Last update: Feb 17, 2025 at 12:39 PM
---
 
 CREATE TABLE `location` (
   `id` int(11) NOT NULL,
@@ -384,6 +391,10 @@ CREATE TABLE `location` (
   `country_code` char(2) NOT NULL,
   `phone_number` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `location`:
+--
 
 --
 -- Dumping data for table `location`
@@ -430,13 +441,15 @@ INSERT INTO `location` (`id`, `city`, `address`, `zip_code`, `country_code`, `ph
 --
 -- Table structure for table `tag`
 --
--- Creation: Feb 15, 2025 at 05:00 PM
---
 
 CREATE TABLE `tag` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `tag`:
+--
 
 --
 -- Dumping data for table `tag`

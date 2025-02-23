@@ -12,13 +12,8 @@
   </component>
   <component name="PhpIncludePathManager">
     <include_path>
-<<<<<<< HEAD
-      <path value="$PROJECT_DIR$/DTT assessment  - Backend_2023 copy/web_backend_test_catering_api/web_backend_test_catering_api/web_backend_test_catering_api/vendor/bramus/router" />
-      <path value="$PROJECT_DIR$/DTT assessment  - Backend_2023 copy/web_backend_test_catering_api/web_backend_test_catering_api/web_backend_test_catering_api/vendor/composer" />
-=======
-      <path value="$PROJECT_DIR$/web_backend_test_catering_api/vendor/bramus/router" />
       <path value="$PROJECT_DIR$/web_backend_test_catering_api/vendor/composer" />
->>>>>>> dc6c9a005ef86815bea7d123a7577de00d11c602
+      <path value="$PROJECT_DIR$/web_backend_test_catering_api/vendor/bramus/router" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.3">
